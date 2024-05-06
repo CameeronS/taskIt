@@ -4,6 +4,8 @@ import jakarta.persistence.*;
 import lombok.*;
 import taskIt.example.taskIt.enumeration.RoleEnum;
 
+import java.io.Serializable;
+
 @Entity
 @Table(name = "user_roles")
 @Getter
@@ -11,7 +13,7 @@ import taskIt.example.taskIt.enumeration.RoleEnum;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class Role {
+public class Role implements Serializable {
 
 
     @Id

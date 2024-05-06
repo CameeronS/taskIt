@@ -1,30 +1,38 @@
 package taskIt.example.taskIt.config;
-
-
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.AuthenticationProvider;
+import org.springframework.security.authentication.ProviderManager;
+import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
-import org.springframework.security.config.annotation.web.configurers.SessionManagementConfigurer;
+import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.security.web.context.HttpSessionSecurityContextRepository;
 import org.springframework.security.web.context.SecurityContextRepository;
+import static org.springframework.security.config.http.SessionCreationPolicy.STATELESS;
 
-import static org.springframework.security.config.http.SessionCreationPolicy.IF_REQUIRED;
 
 @Configuration
 @EnableWebSecurity
 @EnableMethodSecurity
+@RequiredArgsConstructor
 public class SecurityConfig {
 
     @Value(value = "${custom.max.session}")
     private int maxSession;
+    private final UserDetailsService userDetailsService;
+    private final AuthFilter authFilter;
+    private final AuthenticationProvider authenticationProvider;
 
 
     @Bean
@@ -37,22 +45,11 @@ public class SecurityConfig {
                                             .anyRequest()
                                             .authenticated())
                    .sessionManagement(sessionManagement ->
-                           sessionManagement.sessionCreationPolicy(IF_REQUIRED)
-                                            .sessionFixation(SessionManagementConfigurer.SessionFixationConfigurer::newSession)
-                                            .maximumSessions(maxSession))
+                           sessionManagement.sessionCreationPolicy(STATELESS)
+                                            )
+                   .authenticationProvider(authenticationProvider)
+                     .addFilterBefore(authFilter, UsernamePasswordAuthenticationFilter.class)
                    .build();
     }
-
-
-    @Bean
-    PasswordEncoder passwordEncoder() {
-        return new BCryptPasswordEncoder();
-    }
-
-    @Bean
-    public SecurityContextRepository securityContextRepository() {
-        return new HttpSessionSecurityContextRepository();
-    }
-
 
 }

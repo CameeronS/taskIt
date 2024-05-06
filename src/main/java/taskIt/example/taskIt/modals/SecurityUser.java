@@ -5,13 +5,12 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import java.util.Collection;
-import java.util.List;
 import java.util.stream.Collectors;
 
 public class SecurityUser implements UserDetails {
 
 
-    private User user;
+    private final User user;
 
     public SecurityUser(User user) {
         this.user = user;
@@ -33,7 +32,7 @@ public class SecurityUser implements UserDetails {
 
     @Override
     public String getUsername() {
-        return user.getUsername();
+        return user.getEmail();
     }
 
     @Override
