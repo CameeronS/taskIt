@@ -14,8 +14,6 @@ import static org.springframework.http.HttpStatus.OK;
 @RequestMapping("/api/auth")
 public class AuthController {
 
-
-
     private final AuthService authService;
 
     @PostMapping(path = "/register")
@@ -31,8 +29,6 @@ public class AuthController {
     ) {
         return new ResponseEntity<>(authService.login(authDTO), OK);
     }
-
-
 
     @GetMapping("/protected")
     public ResponseEntity<?> protectedRoute() {

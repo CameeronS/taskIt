@@ -42,6 +42,12 @@ public class User implements Serializable {
     @OneToMany(cascade = {PERSIST, MERGE, REMOVE}, fetch = EAGER, mappedBy = "user", orphanRemoval = true)
     private Set<Role> roles = new HashSet<>();
 
+    @JsonIgnore
+    @OneToMany(cascade = {PERSIST, MERGE, REMOVE}, fetch = EAGER, mappedBy = "user", orphanRemoval = true)
+    private Set<Workspace> workspaces = new HashSet<>();
+
+
+
     public void addRole(Role role) {
         this.roles.add(role);
         role.setUser(this);

@@ -28,12 +28,9 @@ import static org.springframework.security.config.http.SessionCreationPolicy.STA
 @RequiredArgsConstructor
 public class SecurityConfig {
 
-    @Value(value = "${custom.max.session}")
-    private int maxSession;
-    private final UserDetailsService userDetailsService;
+
     private final AuthFilter authFilter;
     private final AuthenticationProvider authenticationProvider;
-
 
     @Bean
     SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {

@@ -53,14 +53,9 @@ public class AuthService {
         user.addRole(new Role(RoleEnum.USER));
         user.setCreatedAt(LocalDateTime.now());
         user.setUpdatedAt(LocalDateTime.now());
-
         var securityUser = new SecurityUser(user);
         var jwtToken = jwtService.generateToken(securityUser, user.getUsername(), user.getId(), user);
-
-
         userRepository.save(user);
-
-
         return jwtToken;
     }
 
@@ -73,10 +68,8 @@ public class AuthService {
         );
 
         return jwtService.generateToken((SecurityUser) authentication.getPrincipal(), user.getUsername(), user.getId(), user);
-
-
-
     }
+
 
 
 
