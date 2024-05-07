@@ -28,10 +28,15 @@ public class SecurityConfig {
         return http.csrf(AbstractHttpConfigurer::disable)
                    .cors(Customizer.withDefaults())
                    .authorizeHttpRequests(authorizeRequests ->
-                           authorizeRequests.requestMatchers("api/auth/register", "api/auth/login")
+                           authorizeRequests
+                                   .requestMatchers("api/auth/register", "api/auth/login")
                                             .permitAll()
                                             .anyRequest()
-                                            .authenticated())
+                                            .authenticated()
+                   )
+                   .securityMatchers( (matchers) -> matchers
+                           .requestMatchers("api/auth/register", "api/auth/login"))
+
                    .sessionManagement(sessionManagement ->
                            sessionManagement.sessionCreationPolicy(STATELESS)
                                             )
