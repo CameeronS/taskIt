@@ -2,8 +2,11 @@ import { Fragment } from "react"
 import { Button } from "./ui/button"
 import { Link } from "@tanstack/react-router"
 import { navItems } from "@/lib/items"
+import { useAuth } from "@/hooks/user"
 
 export const Navbar = () => {
+  const { user } = useAuth()
+
   return (
     <header className=" sticky top-0 z-[1000]  h-16 py-2">
       <nav className="  mx-auto flex  items-center justify-between bg-background ">
@@ -18,6 +21,12 @@ export const Navbar = () => {
               return (
                 <Button key={item.id} className=" ml-5">
                   {item.name}
+                </Button>
+              )
+            if (item.name === "Log In" && user)
+              return (
+                <Button key={1223} variant={"ghost"}>
+                  Log Out
                 </Button>
               )
 

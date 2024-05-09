@@ -12,55 +12,25 @@ import {
   FormMessage,
 } from "@/components/ui/form"
 import { Input } from "@/components/ui/input"
-import { useMutation } from "@tanstack/react-query"
 import { useState } from "react"
-
-const formSchema = z.object({
-  email: z.string().email({ message: "Invalid email address" }),
-  password: z.string().min(8, { message: "Password is too short" }),
-})
+import { loginSchema } from "@/schemas/auth"
+import { useLogin } from "@/hooks/use-auth"
 
 export const LoginForm = () => {
   const [data, setData] = useState<string>()
 
-  const form = useForm<z.infer<typeof formSchema>>({
-    resolver: zodResolver(formSchema),
+  const form = useForm<z.infer<typeof loginSchema>>({
+    resolver: zodResolver(loginSchema),
     defaultValues: {
       email: "",
       password: "",
     },
   })
 
-  async function register(values: z.infer<typeof formSchema>) {
-    const response = await fetch("/api/auth/login", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(values),
-    })
-    const data = await response.json()
+  const { mutate } = useLogin()
 
-    return data
-  }
-
-  const { mutate } = useMutation({
-    mutationFn: register,
-    onSuccess: (data) => {
-      alert("Registration successful!")
-      console.log(data)
-      const token = JSON.stringify(data) as string
-      setData(token)
-    },
-    onError: (error) => {
-      alert("Registration failed!")
-      console.error(error)
-    },
-  })
-
-  function onSubmit(values: z.infer<typeof formSchema>) {
+  function onSubmit(values: z.infer<typeof loginSchema>) {
     mutate(values)
-    console.log(values)
   }
 
   return (
@@ -99,7 +69,11 @@ export const LoginForm = () => {
               </FormItem>
             )}
           />
-          <Button className=" mt-10" type="submit">
+          <Button
+            disabled={form.formState.isSubmitting}
+            className=" mt-10"
+            type="submit"
+          >
             Submit
           </Button>
         </form>

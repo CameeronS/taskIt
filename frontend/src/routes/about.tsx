@@ -1,3 +1,4 @@
+import { Profile } from "@/components/profile"
 import { createFileRoute } from "@tanstack/react-router"
 
 export const Route = createFileRoute("/about")({
@@ -5,9 +6,5 @@ export const Route = createFileRoute("/about")({
 })
 
 function About() {
-  return (
-    <div>
-      <h3>Welcome</h3>
-    </div>
-  )
+  return <Profile />
 }
