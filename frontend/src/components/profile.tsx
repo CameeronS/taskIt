@@ -1,7 +1,8 @@
-import { useAuth } from "@/hooks/user"
+import { userQueryOptions } from "@/hooks/user"
+import { useQuery } from "@tanstack/react-query"
 
 export const Profile = () => {
-  const { user } = useAuth()
+  const { data: user } = useQuery(userQueryOptions)
 
   if (!user) {
     return <div>Loading...</div>

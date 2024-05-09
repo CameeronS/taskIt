@@ -1,9 +1,10 @@
 import { logIn } from "@/api-requests/auth"
-import { useMutation } from "@tanstack/react-query"
+import { useMutation, useQueryClient } from "@tanstack/react-query"
 import { useNavigate } from "@tanstack/react-router"
 
 export const useLogin = () => {
   const navigate = useNavigate()
+  const queryClient = useQueryClient()
 
   return useMutation({
     mutationFn: logIn,
@@ -12,6 +13,7 @@ export const useLogin = () => {
       if (token) localStorage.setItem("authToken", token)
       if (refreshToken) localStorage.setItem("refreshToken", refreshToken)
       navigate({ to: "/about" })
+      queryClient.invalidateQueries({ queryKey: ["getUser"] })
     },
   })
 }

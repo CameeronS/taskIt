@@ -1,4 +1,12 @@
 import axios from "axios"
+type ErrorResponse = {
+  error: {
+    response: {
+      data: string
+      status: number
+    }
+  }
+}
 
 const api = axios.create({
   baseURL: "/api",
@@ -24,23 +32,34 @@ api.interceptors.response.use(
 
     // If the error status is 401 and there is no originalRequest._retry flag,
     // it means the token has expired and we need to refresh it
-    if (error.response.status === 401 && !originalRequest._retry) {
+    if (error.response.status === 500 && !originalRequest._retry) {
       originalRequest._retry = true
-
       try {
-        const refreshToken = localStorage.getItem("refreshToken")
+        console.log("Refreshing token")
+        const currentRefreshToken = localStorage.getItem("refreshToken")
         const response = await axios.post("/api/auth/refreshToken", {
-          token: refreshToken,
+          token: currentRefreshToken,
         })
-        const { token } = response.data
+        const { token, refreshToken } = response.data
+        const currentToken = localStorage.getItem("authToken")
 
-        localStorage.setItem("token", token)
+        currentToken && localStorage.setItem("authToken", token)
+        refreshToken && localStorage.setItem("refreshToken", refreshToken)
         console.log("Token refreshed")
 
         // Retry the original request with the new token
         originalRequest.headers.Authorization = `Bearer ${token}`
         return axios(originalRequest)
       } catch (error) {
+        if (
+          error.response.status === 401 &&
+          error.response.data === "Invalid refresh token"
+        ) {
+          localStorage.removeItem("authToken")
+          localStorage.removeItem("refreshToken")
+          window.location.href = "/auth"
+        }
+
         // Handle refresh token error or redirect to login
       }
     }

@@ -1,11 +1,20 @@
 import { Fragment } from "react"
 import { Button } from "./ui/button"
-import { Link } from "@tanstack/react-router"
+import { Link, useNavigate } from "@tanstack/react-router"
 import { navItems } from "@/lib/items"
 import { useAuth } from "@/hooks/user"
 
 export const Navbar = () => {
   const { user } = useAuth()
+  const navigate = useNavigate()
+
+  function handleLogout() {
+    const authToken = localStorage.getItem("authToken")
+    const refreshToken = localStorage.getItem("refreshToken")
+    if (authToken) localStorage.removeItem("authToken")
+    if (refreshToken) localStorage.removeItem("refreshToken")
+    navigate({ to: "/auth" })
+  }
 
   return (
     <header className=" sticky top-0 z-[1000]  h-16 py-2">
@@ -25,7 +34,7 @@ export const Navbar = () => {
               )
             if (item.name === "Log In" && user)
               return (
-                <Button key={1223} variant={"ghost"}>
+                <Button onClick={handleLogout} key={1223} variant={"ghost"}>
                   Log Out
                 </Button>
               )

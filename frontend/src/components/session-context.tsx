@@ -1,3 +1,4 @@
+import { useAuth } from "@/hooks/user"
 import { User } from "@/schemas/user"
 import { createContext } from "react"
 
@@ -13,13 +14,12 @@ export const AuthContext = createContext<AuthContext>({
   user: undefined,
 })
 
-/*
 export const AuthProvider = ({ children }: Context) => {
-  const { data: userData } = useUser()
+  const { user } = useAuth()
 
   return (
-    <AuthContext.Provider value={{ user: userData }}>
+    <AuthContext.Provider value={{ user: user }}>
       {children}
     </AuthContext.Provider>
   )
-}*/
+}

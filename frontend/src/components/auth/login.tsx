@@ -27,7 +27,7 @@ export const LoginForm = () => {
     },
   })
 
-  const { mutate } = useLogin()
+  const { mutate, error } = useLogin()
 
   function onSubmit(values: z.infer<typeof loginSchema>) {
     mutate(values)
@@ -69,6 +69,8 @@ export const LoginForm = () => {
               </FormItem>
             )}
           />
+          {error && <FormMessage>{error.message}</FormMessage>}
+
           <Button
             disabled={form.formState.isSubmitting}
             className=" mt-10"
