@@ -1,12 +1,12 @@
 import axios from "axios"
-type ErrorResponse = {
+/*type ErrorResponse = {
   error: {
     response: {
       data: string
       status: number
     }
   }
-}
+}*/
 
 const api = axios.create({
   baseURL: "/api",
@@ -51,15 +51,6 @@ api.interceptors.response.use(
         originalRequest.headers.Authorization = `Bearer ${token}`
         return axios(originalRequest)
       } catch (error) {
-        if (
-          error.response.status === 401 &&
-          error.response.data === "Invalid refresh token"
-        ) {
-          localStorage.removeItem("authToken")
-          localStorage.removeItem("refreshToken")
-          window.location.href = "/auth"
-        }
-
         // Handle refresh token error or redirect to login
       }
     }

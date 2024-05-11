@@ -11,6 +11,8 @@ import org.springframework.security.config.annotation.web.configurers.AbstractHt
 
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.web.cors.CorsConfiguration;
+
 import static org.springframework.security.config.http.SessionCreationPolicy.STATELESS;
 
 
@@ -26,19 +28,20 @@ public class SecurityConfig {
     @Bean
     SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         return http.csrf(AbstractHttpConfigurer::disable)
-                   .cors(Customizer.withDefaults())
+                   .cors(cors -> cors.configurationSource(request -> new CorsConfiguration().applyPermitDefaultValues()))
                    .authorizeHttpRequests(authorizeRequests ->
                            authorizeRequests
-                                   .requestMatchers("api/auth/register", "api/auth/login")
+                                   .requestMatchers("api/auth/register", "api/auth/login", "api/auth/refresh-token")
                                             .permitAll()
                                             .anyRequest()
                                             .authenticated()
                    )
                    .securityMatchers( (matchers) -> matchers
-                           .requestMatchers("api/auth/register", "api/auth/login"))
+                           .requestMatchers("api/auth/register", "api/auth/login", "api/auth/refresh-token"))
 
                    .sessionManagement(sessionManagement ->
                            sessionManagement.sessionCreationPolicy(STATELESS)
+
                                             )
                    .authenticationProvider(authenticationProvider)
                      .addFilterBefore(authFilter, UsernamePasswordAuthenticationFilter.class)

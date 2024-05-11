@@ -1,8 +1,13 @@
 package com.cameerons.taskIt.service;
+import com.cameerons.taskIt.dto.UserDto;
 import com.cameerons.taskIt.modals.Token;
 import com.cameerons.taskIt.repository.TokenRepository;
+import com.cameerons.taskIt.response.RegisterResponse;
+import jakarta.servlet.http.Cookie;
+import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -14,6 +19,7 @@ import com.cameerons.taskIt.requests.LoginRequest;
 import com.cameerons.taskIt.requests.RegisterRequest;
 import com.cameerons.taskIt.response.LoginResponse;
 
+import java.net.HttpCookie;
 import java.security.SecureRandom;
 import java.time.LocalDateTime;
 import java.util.HashMap;
@@ -31,13 +37,16 @@ public class AuthService {
     private final RoleRepository roleRepository;
     private final AuthenticationManager authenticationManager;
     private final JwtService jwtService;
+    private final RefreshTokenService refreshTokenService;
 
 
-    public String register(RegisterRequest registerRequest) {
+    public RegisterResponse register(RegisterRequest registerRequest) {
 
         Optional<User> userOptional = userRepository.findByEmail(registerRequest.getEmail());
         if (userOptional.isPresent()) {
-            return "User already exists";
+            return RegisterResponse.builder()
+                    .message("Email is already taken")
+                    .build();
         }
 
         Role role = roleRepository.findByName("USER")
@@ -46,28 +55,37 @@ public class AuthService {
         var user = User.builder()
                 .email(registerRequest.getEmail())
                 .firstName(registerRequest.getFirstName())
+                .lastName(registerRequest.getLastName())
                 .password(passwordEncoder.encode(registerRequest.getPassword()))
                 .createdAt(LocalDateTime.now())
                 .roles(List.of(role))
                 .build();
 
         userRepository.save(user);
-        //sendEmail(user);
-        return "Verification email sent to: " + user.getEmail();
+
+        return RegisterResponse.builder()
+                .message("User registered successfully")
+                .build();
+
     }
 
-    public LoginResponse login  (LoginRequest loginRequest) {
+    public LoginResponse login  (LoginRequest loginRequest, HttpServletResponse response) {
         var authentication = authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(loginRequest.getEmail(), loginRequest.getPassword())
         );
         var claims = new HashMap<String, Object>();
         var user = ((User)authentication.getPrincipal());
         claims.put("fullName", user.getFirstName());
-
         var jwt = jwtService.generateToken(user, claims);
+        var refreshToken = refreshTokenService.createRefreshToken(user.getEmail());
         return LoginResponse.builder()
                 .token(jwt)
+                .refreshToken(refreshToken.getToken())
                 .build();
+    }
+
+    public UserDto getAuthUser() {
+        return null;
     }
 
 

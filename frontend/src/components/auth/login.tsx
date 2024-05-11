@@ -12,13 +12,10 @@ import {
   FormMessage,
 } from "@/components/ui/form"
 import { Input } from "@/components/ui/input"
-import { useState } from "react"
 import { loginSchema } from "@/schemas/auth"
 import { useLogin } from "@/hooks/use-auth"
 
 export const LoginForm = () => {
-  const [data, setData] = useState<string>()
-
   const form = useForm<z.infer<typeof loginSchema>>({
     resolver: zodResolver(loginSchema),
     defaultValues: {
@@ -27,7 +24,7 @@ export const LoginForm = () => {
     },
   })
 
-  const { mutate, error } = useLogin()
+  const { mutate, error, isPending } = useLogin()
 
   function onSubmit(values: z.infer<typeof loginSchema>) {
     mutate(values)
@@ -72,17 +69,15 @@ export const LoginForm = () => {
           {error && <FormMessage>{error.message}</FormMessage>}
 
           <Button
-            disabled={form.formState.isSubmitting}
+            disabled={form.formState.isSubmitting || isPending}
             className=" mt-10"
             type="submit"
           >
-            Submit
+            Log In
+            {isPending && " ..."}
           </Button>
         </form>
       </Form>
-      <p className=" mt-5   whitespace-pre-wrap break-words break-all">
-        {data}
-      </p>
     </div>
   )
 }

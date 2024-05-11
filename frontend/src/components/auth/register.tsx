@@ -33,14 +33,7 @@ export const RegisterForm = () => {
   })
 
   async function register(values: z.infer<typeof formSchema>) {
-    const response = await fetch("api/auth/register", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(values),
-    })
-    const data = await response.json()
+    console.log(values)
   }
 
   const { mutate } = useMutation({

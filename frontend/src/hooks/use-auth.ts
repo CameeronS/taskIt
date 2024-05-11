@@ -12,7 +12,7 @@ export const useLogin = () => {
       const { token, refreshToken } = data
       if (token) localStorage.setItem("authToken", token)
       if (refreshToken) localStorage.setItem("refreshToken", refreshToken)
-      navigate({ to: "/about" })
+      navigate({ to: "/dashboard" })
       queryClient.invalidateQueries({ queryKey: ["getUser"] })
     },
   })

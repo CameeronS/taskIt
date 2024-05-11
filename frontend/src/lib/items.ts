@@ -1,7 +1,7 @@
 export const navItems = [
   {
     id: 1,
-    name: "Test TaskIt",
+    name: "Get Started",
     link: "/",
   },
 

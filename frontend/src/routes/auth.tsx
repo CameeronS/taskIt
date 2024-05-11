@@ -4,7 +4,7 @@ import { createFileRoute, redirect } from "@tanstack/react-router"
 
 export const Route = createFileRoute("/auth")({
   component: Auth,
-  beforeLoad: async ({ context, location }) => {
+  beforeLoad: async ({ context }) => {
     const queryClient = context.queryClient
     const user = await queryClient.fetchQuery(userQueryOptions)
     if (user) {
@@ -12,7 +12,6 @@ export const Route = createFileRoute("/auth")({
     }
   },
 })
-
 function Auth() {
   return (
     <section className=" h-full flex justify-center items-center">
