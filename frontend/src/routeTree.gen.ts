@@ -11,63 +11,73 @@
 // Import Routes
 
 import { Route as rootRoute } from './routes/__root'
-import { Route as AuthImport } from './routes/auth'
-import { Route as LayoutImport } from './routes/_layout'
-import { Route as IndexImport } from './routes/index'
-import { Route as LayoutAuthenticatedImport } from './routes/_layout/_authenticated'
-import { Route as LayoutAuthenticatedDashboardImport } from './routes/_layout/_authenticated/dashboard'
+import { Route as AuthenticatedImport } from './routes/_authenticated'
+import { Route as HomeLayoutImport } from './routes/_home/_layout'
+import { Route as AuthenticatedLayoutImport } from './routes/_authenticated/_layout'
+import { Route as HomeLayoutIndexImport } from './routes/_home/_layout/index'
+import { Route as HomeLayoutAuthImport } from './routes/_home/_layout/auth'
+import { Route as AuthenticatedLayoutDashboardImport } from './routes/_authenticated/_layout/dashboard'
 
 // Create/Update Routes
 
-const AuthRoute = AuthImport.update({
-  path: '/auth',
-  getParentRoute: () => rootRoute,
-} as any)
-
-const LayoutRoute = LayoutImport.update({
-  id: '/_layout',
-  getParentRoute: () => rootRoute,
-} as any)
-
-const IndexRoute = IndexImport.update({
-  path: '/',
-  getParentRoute: () => rootRoute,
-} as any)
-
-const LayoutAuthenticatedRoute = LayoutAuthenticatedImport.update({
+const AuthenticatedRoute = AuthenticatedImport.update({
   id: '/_authenticated',
-  getParentRoute: () => LayoutRoute,
+  getParentRoute: () => rootRoute,
 } as any)
 
-const LayoutAuthenticatedDashboardRoute =
-  LayoutAuthenticatedDashboardImport.update({
+const HomeLayoutRoute = HomeLayoutImport.update({
+  id: '/_home/_layout',
+  getParentRoute: () => rootRoute,
+} as any)
+
+const AuthenticatedLayoutRoute = AuthenticatedLayoutImport.update({
+  id: '/_layout',
+  getParentRoute: () => AuthenticatedRoute,
+} as any)
+
+const HomeLayoutIndexRoute = HomeLayoutIndexImport.update({
+  path: '/',
+  getParentRoute: () => HomeLayoutRoute,
+} as any)
+
+const HomeLayoutAuthRoute = HomeLayoutAuthImport.update({
+  path: '/auth',
+  getParentRoute: () => HomeLayoutRoute,
+} as any)
+
+const AuthenticatedLayoutDashboardRoute =
+  AuthenticatedLayoutDashboardImport.update({
     path: '/dashboard',
-    getParentRoute: () => LayoutAuthenticatedRoute,
+    getParentRoute: () => AuthenticatedLayoutRoute,
   } as any)
 
 // Populate the FileRoutesByPath interface
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
-    '/': {
-      preLoaderRoute: typeof IndexImport
+    '/_authenticated': {
+      preLoaderRoute: typeof AuthenticatedImport
       parentRoute: typeof rootRoute
     }
-    '/_layout': {
-      preLoaderRoute: typeof LayoutImport
+    '/_authenticated/_layout': {
+      preLoaderRoute: typeof AuthenticatedLayoutImport
+      parentRoute: typeof AuthenticatedImport
+    }
+    '/_home/_layout': {
+      preLoaderRoute: typeof HomeLayoutImport
       parentRoute: typeof rootRoute
     }
-    '/auth': {
-      preLoaderRoute: typeof AuthImport
-      parentRoute: typeof rootRoute
+    '/_authenticated/_layout/dashboard': {
+      preLoaderRoute: typeof AuthenticatedLayoutDashboardImport
+      parentRoute: typeof AuthenticatedLayoutImport
     }
-    '/_layout/_authenticated': {
-      preLoaderRoute: typeof LayoutAuthenticatedImport
-      parentRoute: typeof LayoutImport
+    '/_home/_layout/auth': {
+      preLoaderRoute: typeof HomeLayoutAuthImport
+      parentRoute: typeof HomeLayoutImport
     }
-    '/_layout/_authenticated/dashboard': {
-      preLoaderRoute: typeof LayoutAuthenticatedDashboardImport
-      parentRoute: typeof LayoutAuthenticatedImport
+    '/_home/_layout/': {
+      preLoaderRoute: typeof HomeLayoutIndexImport
+      parentRoute: typeof HomeLayoutImport
     }
   }
 }
@@ -75,11 +85,10 @@ declare module '@tanstack/react-router' {
 // Create and export the route tree
 
 export const routeTree = rootRoute.addChildren([
-  IndexRoute,
-  LayoutRoute.addChildren([
-    LayoutAuthenticatedRoute.addChildren([LayoutAuthenticatedDashboardRoute]),
+  AuthenticatedRoute.addChildren([
+    AuthenticatedLayoutRoute.addChildren([AuthenticatedLayoutDashboardRoute]),
   ]),
-  AuthRoute,
+  HomeLayoutRoute.addChildren([HomeLayoutAuthRoute, HomeLayoutIndexRoute]),
 ])
 
 /* prettier-ignore-end */

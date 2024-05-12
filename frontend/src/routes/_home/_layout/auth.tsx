@@ -2,7 +2,7 @@ import { LoginForm } from "@/components/auth/login"
 import { userQueryOptions } from "@/hooks/user"
 import { createFileRoute, redirect } from "@tanstack/react-router"
 
-export const Route = createFileRoute("/auth")({
+export const Route = createFileRoute("/_home/_layout/auth")({
   component: Auth,
   beforeLoad: async ({ context }) => {
     const queryClient = context.queryClient

@@ -8,10 +8,5 @@ interface MyRouterContext {
 }
 
 export const Route = createRootRouteWithContext<MyRouterContext>()({
-  component: () => (
-    <MaxWidthWrapper>
-      <Navbar />
-      <Outlet />
-    </MaxWidthWrapper>
-  ),
+  component: () => <Outlet />,
 })
