@@ -27,6 +27,8 @@ public class AuthFilter extends OncePerRequestFilter {
 
     private final JwtService jwtService;
     private final UserDetailsService userDetailsService;
+    // create logger
+    private static final Logger logger = LoggerFactory.getLogger(AuthFilter.class);
 
     // create logger
 
@@ -61,9 +63,6 @@ public class AuthFilter extends OncePerRequestFilter {
                         new WebAuthenticationDetailsSource().buildDetails(request)
                 );
                 SecurityContextHolder.getContext().setAuthentication(authToken);
-            }  if(!jwtService.isTokenValid(jwt, userDetails)){
-
-
             }
         }
         filterChain.doFilter(request, response);

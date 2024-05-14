@@ -5,6 +5,7 @@ import com.cameerons.taskIt.modals.User;
 import com.cameerons.taskIt.repository.RefreshTokenRepository;
 import com.cameerons.taskIt.repository.UserRepository;
 import lombok.AllArgsConstructor;
+import lombok.Value;
 import org.springframework.stereotype.Service;
 import java.time.Instant;
 import java.util.Optional;
@@ -16,6 +17,7 @@ public class RefreshTokenService {
 
     private final RefreshTokenRepository refreshTokenRepository;
     private final UserRepository userRepository;
+    private final static long REFRESH_TOKEN_EXPIRATION_TIME = 604800000;
 
     public RefreshToken createRefreshToken(String email){
 
@@ -29,7 +31,8 @@ public class RefreshTokenService {
             RefreshToken refreshToken = RefreshToken.builder()
                                                     .user(userRepository.findByEmail(email).get())
                                                     .token(UUID.randomUUID().toString())
-                                                    .expiresAt(Instant.now().plusMillis(600000))
+                                                    // set time to 1 minute for testing
+                                                    .expiresAt(Instant.now().plusMillis(REFRESH_TOKEN_EXPIRATION_TIME))
                                                     .build();
             return refreshTokenRepository.save(refreshToken);
         }

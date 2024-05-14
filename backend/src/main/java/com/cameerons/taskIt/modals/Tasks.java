@@ -20,6 +20,7 @@ public class Tasks {
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
 
+
     // A task belongs to a workspace and a workspace has many tasks
     @ManyToOne
     @JoinColumn(name = "workspace_id", nullable = false, referencedColumnName = "id", foreignKey = @ForeignKey(name = "task_workspace_fk"))

@@ -78,6 +78,18 @@ public class AuthService {
         claims.put("fullName", user.getFirstName());
         var jwt = jwtService.generateToken(user, claims);
         var refreshToken = refreshTokenService.createRefreshToken(user.getEmail());
+
+        Cookie cookie = new Cookie("refresh_token", refreshToken.getToken());
+        cookie.setMaxAge(60 * 60 * 24 * 7);
+        cookie.setPath("/");
+        response.addCookie(cookie);
+
+        Cookie jwtCookie = new Cookie("auth_token", jwt);
+        jwtCookie.setMaxAge(60 * 60 * 24 * 7);
+        jwtCookie.setPath("/");
+        response.addCookie(jwtCookie);
+
+
         return LoginResponse.builder()
                 .token(jwt)
                 .refreshToken(refreshToken.getToken())

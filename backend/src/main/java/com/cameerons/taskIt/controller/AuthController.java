@@ -7,6 +7,7 @@ import com.cameerons.taskIt.service.AuthService;
 import com.cameerons.taskIt.service.JwtService;
 import com.cameerons.taskIt.service.RefreshTokenService;
 import jakarta.servlet.http.Cookie;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -18,6 +19,7 @@ import com.cameerons.taskIt.requests.LoginRequest;
 import com.cameerons.taskIt.requests.RegisterRequest;
 import com.cameerons.taskIt.response.LoginResponse;
 
+import java.util.Arrays;
 import java.util.HashMap;
 
 import static org.springframework.http.HttpStatus.CREATED;
@@ -60,7 +62,7 @@ public class AuthController {
     }}
 
     @PostMapping("/refreshToken")
-    public ResponseEntity<?> refreshToken(@RequestBody RefreshTokenDto refreshTokenRequestDTO){
+    public ResponseEntity<?> refreshToken(@RequestBody RefreshTokenDto refreshTokenRequestDTO, HttpServletResponse response, HttpServletRequest request){
         try {
            var res = refreshTokenService.findByToken(refreshTokenRequestDTO.token())
                                .map(refreshTokenService::verifyExpiration)
@@ -69,6 +71,19 @@ public class AuthController {
                                    var claims = new HashMap<String, Object>();
                                    claims.put("fullName", userInfo.getFirstName());
                                    String accessToken = jwtService.generateToken(userInfo, claims);
+                                   Cookie [] cookies = request.getCookies();
+                                   // delete the old access token and create a new one
+                                      Arrays.stream(cookies)
+                                             .filter(cookie -> cookie.getName().equals("auth_token"))
+                                             .forEach(cookie -> {
+                                                  cookie.setValue("");
+                                                  cookie.setMaxAge(0);
+                                                  response.addCookie(cookie);
+                                             });
+                                      Cookie jwtCookie = new Cookie("auth_token", accessToken);
+                                        jwtCookie.setMaxAge(60 * 60 * 24 * 7);
+                                        jwtCookie.setPath("/");
+                                        response.addCookie(jwtCookie);
                                    return LoginResponse.builder()
                                                        .token(accessToken)
                                                        .refreshToken(refreshTokenRequestDTO.token())
@@ -79,6 +94,21 @@ public class AuthController {
         } catch (Exception e) {
             return ResponseEntity.status(UNAUTHORIZED).body("Invalid refresh token");
         }
+    }
+
+    @GetMapping("/logout")
+    public ResponseEntity<?> logout(HttpServletRequest request, HttpServletResponse response){
+        Cookie [] cookies = request.getCookies();
+        Arrays.stream(cookies)
+              .filter(cookie -> cookie.getName().equals("auth_token") || cookie.getName().equals("refresh_token"))
+              .forEach(cookie -> {
+                  cookie.setValue("");
+                  cookie.setMaxAge(0);
+                  response.addCookie(cookie);
+              });
+
+
+        return ResponseEntity.ok("Logout successful");
     }
 
 

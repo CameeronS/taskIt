@@ -1,4 +1,6 @@
 package com.cameerons.taskIt.service;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.stereotype.Service;
@@ -20,12 +22,14 @@ public class JwtService {
     @Value("${jwt.secret}")
     private String SECRET_KEY;
 
+    // Logger
+    private static final Logger logger = LoggerFactory.getLogger(JwtService.class);
     public String extractUsername(String token) {
         return extractClaim(token, Claims::getSubject);
     }
     public <T> T extractClaim(String token, Function<Claims, T> claimsResolver){
-        final Claims claims = extractAllClaims(token);
-        return claimsResolver.apply(claims);
+            final Claims claims = extractAllClaims(token);
+            return claimsResolver.apply(claims);
     }
 
     public String buildToken(
@@ -42,8 +46,8 @@ public class JwtService {
                 .setClaims(extraClaims)
                 .setSubject(userDetails.getUsername())
                 .setIssuedAt(new Date(System.currentTimeMillis()))
-             // set expiration time to 1 minute
-                .setExpiration(new Date(System.currentTimeMillis() + 60000))
+             // set expiration time to 30 minutes
+                .setExpiration(new Date(System.currentTimeMillis() + 1800000))
                 .signWith(getSignInKey(), SignatureAlgorithm.HS256)
                 .claim("authorities", authorities)
                 .compact();
