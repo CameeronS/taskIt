@@ -41,6 +41,7 @@ export const DocumentList = ({ level = 0, documents }: DocumentListProps) => {
               level={level}
               onExpand={() => onExpand(doc.id)}
               expanded={!!expanded[doc.id]}
+              shouldHideIcon={true}
             />
 
             {expanded[doc.id] && doc.children.length === 0 && (

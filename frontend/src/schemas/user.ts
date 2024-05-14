@@ -32,4 +32,5 @@ export const createDocumentSchema = z.object({
   title: z.string(),
   content: z.string(),
   icon: z.string().optional().nullable(),
+  parentId: z.number().optional().nullable(),
 })

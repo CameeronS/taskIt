@@ -2,7 +2,6 @@ import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
-  DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
@@ -22,9 +21,11 @@ export const UserItems = () => {
           role="button"
           className=" flex items-center text-sm p-3 w-full hover:bg-primary/5"
         >
-          <div className=" gap-x-2 flex items-center max-w-[120px]">
-            <UserCircle2Icon className="w-6 h-6" />
-            <span className=" text-start truncate">
+          <div className=" gap-x-2 flex items-center max-w-[120px] ">
+            <div className=" h-6 w-6 bg-black rounded-md text-white flex justify-center items-center shrink-0 ">
+              {user?.firstName.charAt(0).toUpperCase()}
+            </div>
+            <span className=" text-start truncate font-medium">
               {user?.firstName
                 .split(" ")
                 .map((s) => s.charAt(0).toUpperCase() + s.substring(1))}{" "}
@@ -45,9 +46,6 @@ export const UserItems = () => {
             {user?.email}
           </p>
           <div className=" flex items-center gap-x-2">
-            <div className=" rounded-md  p-1 ">
-              <UserCircle2Icon className="w-5 h-5" />
-            </div>
             <div className=" space-y-1">
               <p className=" text-sm line-clamp-1">
                 {user?.fullName
