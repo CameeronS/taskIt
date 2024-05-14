@@ -8,3 +8,28 @@ export const userSchema = z.object({
 })
 
 export type User = z.infer<typeof userSchema>
+
+export const documentSchema = z.object({
+  id: z.number(),
+  title: z.string(),
+  content: z.string(),
+  icon: z.string().optional().nullable(),
+  parentId: z.number().optional().nullable(),
+})
+
+export const documentListSchema = z.array(documentSchema)
+
+export type Document = z.infer<typeof documentSchema> & {
+  children: Document[]
+}
+
+export const recursiveDocumentSchema: z.ZodType<Document> =
+  documentSchema.extend({
+    children: z.lazy(() => z.array(recursiveDocumentSchema)),
+  })
+
+export const createDocumentSchema = z.object({
+  title: z.string(),
+  content: z.string(),
+  icon: z.string().optional().nullable(),
+})

@@ -1,7 +1,20 @@
 import { useMediaQuery } from "@/hooks/use-media-query"
 import { cn } from "@/lib/utils"
-import { ChevronsLeft, MenuIcon } from "lucide-react"
+import {
+  ChevronsLeft,
+  MenuIcon,
+  PlusCircle,
+  Search,
+  Settings,
+} from "lucide-react"
 import React, { ElementRef, useEffect, useRef, useState } from "react"
+import { UserItems } from "./dashboard/user-items"
+import { Item } from "./dashboard/item"
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
+import { createDocument } from "@/api-requests/user"
+import { toast } from "sonner"
+import { useUserDocumentsOptions } from "@/hooks/user"
+import { DocumentList } from "./dashboard/document-list"
 export function Sidebar() {
   const isMobile = useMediaQuery("(max-width: 768px)")
   const resizeRef = useRef(false)
@@ -9,6 +22,7 @@ export function Sidebar() {
   const navbarRef = useRef<ElementRef<"div">>(null)
   const [isResetting, setIsResetting] = useState<boolean>(false)
   const [isCollapsed, setIsCollapsed] = useState<boolean>(isMobile)
+  const queryClient = useQueryClient()
 
   useEffect(() => {
     if (isMobile) {
@@ -77,6 +91,26 @@ export function Sidebar() {
     }
   }
 
+  const { mutate: handleCreateDocument } = useMutation({
+    mutationKey: ["createDocument"],
+    mutationFn: () =>
+      createDocument({
+        title: "Untitled",
+        content: "",
+        icon: "",
+      }),
+    onSuccess: () => {
+      toast.success("Document created")
+      queryClient.invalidateQueries({ queryKey: ["getUserDocuments"] })
+    },
+    onError: (error) => {
+      toast.error("Failed to create document")
+      console.error(error)
+    },
+  })
+
+  const { data: documents } = useQuery(useUserDocumentsOptions)
+
   return (
     <>
       <aside
@@ -97,11 +131,21 @@ export function Sidebar() {
         >
           <ChevronsLeft className="w-6 h-6" />
         </div>
+
         <div>
           <UserItems />
+          <Item label="Search" icon={Search} isSearch onClick={() => {}} />
+
+          <Item label="Settings" icon={Settings} onClick={() => {}} />
+
+          <Item
+            onClick={handleCreateDocument}
+            label="New Page"
+            icon={PlusCircle}
+          />
         </div>
         <div className=" mt-4">
-          <p>Documents</p>
+          <DocumentList documents={documents!} />
         </div>
         <div
           onMouseDown={handleMouseDown}

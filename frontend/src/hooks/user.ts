@@ -1,16 +1,15 @@
-import { getUser } from "@/api-requests/user"
-import { queryOptions, useQuery } from "@tanstack/react-query"
-
-export const useAuth = () => {
-  const { data: user } = useQuery({
-    queryFn: getUser,
-    queryKey: ["user"],
-  })
-  return { user }
-}
+import { getUser, getUserDocuments } from "@/api-requests/user"
+import { queryOptions } from "@tanstack/react-query"
 
 export const userQueryOptions = queryOptions({
   queryKey: ["getUser"],
   queryFn: getUser,
+  staleTime: Infinity,
+  retry: 1,
+})
+
+export const useUserDocumentsOptions = queryOptions({
+  queryKey: ["getUserDocuments"],
+  queryFn: getUserDocuments,
   staleTime: Infinity,
 })

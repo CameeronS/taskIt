@@ -9,9 +9,6 @@ export const useLogin = () => {
   return useMutation({
     mutationFn: logIn,
     onSuccess: (data) => {
-      const { token, refreshToken } = data
-      if (token) localStorage.setItem("authToken", token)
-      if (refreshToken) localStorage.setItem("refreshToken", refreshToken)
       navigate({ to: "/dashboard" })
       queryClient.invalidateQueries({ queryKey: ["getUser"] })
     },

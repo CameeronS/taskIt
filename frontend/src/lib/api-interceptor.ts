@@ -1,4 +1,6 @@
+import { redirect } from "@tanstack/react-router"
 import axios from "axios"
+import Cookies from "js-cookie"
 /*type ErrorResponse = {
   error: {
     response: {
@@ -7,6 +9,7 @@ import axios from "axios"
     }
   }
 }*/
+const controller = new AbortController()
 
 const api = axios.create({
   baseURL: "/api",
@@ -14,14 +17,24 @@ const api = axios.create({
 
 api.interceptors.request.use(
   (config) => {
-    const token = localStorage.getItem("authToken")
-    if (token) {
-      config.headers["Authorization"] = `Bearer ${token}`
+    const auth_token = Cookies.get("auth_token")
+    if (auth_token) {
+      config.headers["Authorization"] = `Bearer ${auth_token}`
+    } else {
+      console.log("No token found")
+
+      // Cancel the request
+      controller.abort()
+      controller.signal.addEventListener("abort", () => {
+        console.log("Request canceled")
+      })
     }
 
     return config
   },
-  (error) => Promise.reject(error)
+  (error) => {
+    return Promise.reject(error)
+  }
 )
 
 // Add a response interceptor
@@ -29,29 +42,31 @@ api.interceptors.response.use(
   (response) => response,
   async (error) => {
     const originalRequest = error.config
+    const refresh_token = Cookies.get("refresh_token")
 
-    // If the error status is 401 and there is no originalRequest._retry flag,
-    // it means the token has expired and we need to refresh it
+    if (!refresh_token) {
+      return Promise.reject(error)
+    }
+
     if (error.response.status === 500 && !originalRequest._retry) {
       originalRequest._retry = true
       try {
-        console.log("Refreshing token")
-        const currentRefreshToken = localStorage.getItem("refreshToken")
-        const response = await axios.post("/api/auth/refreshToken", {
-          token: currentRefreshToken,
+        await axios.post("/api/auth/refreshToken", {
+          token: refresh_token,
         })
-        const { token, refreshToken } = response.data
-        const currentToken = localStorage.getItem("authToken")
 
-        currentToken && localStorage.setItem("authToken", token)
-        refreshToken && localStorage.setItem("refreshToken", refreshToken)
-        console.log("Token refreshed")
+        console.log("Token succsesfully refreshed")
+        const newToken = Cookies.get("auth_token")
 
+        console.log("Retrying original request")
         // Retry the original request with the new token
-        originalRequest.headers.Authorization = `Bearer ${token}`
+        originalRequest.headers.Authorization = `Bearer ${newToken}`
         return axios(originalRequest)
       } catch (error) {
-        // Handle refresh token error or redirect to login
+        console.log("Logging out")
+        Cookies.remove("auth_token")
+        Cookies.remove("refresh_token")
+        return redirect({ to: "/auth" })
       }
     }
 
