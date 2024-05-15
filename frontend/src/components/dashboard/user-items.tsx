@@ -8,7 +8,7 @@ import {
 import { userQueryOptions } from "@/hooks/user"
 import { useQuery } from "@tanstack/react-query"
 
-import { ChevronsLeftRightIcon, UserCircle2Icon } from "lucide-react"
+import { ChevronsLeftRightIcon } from "lucide-react"
 import { Button } from "../ui/button"
 
 export const UserItems = () => {

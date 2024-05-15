@@ -6,6 +6,7 @@ import {
   PlusCircle,
   Search,
   Settings,
+  Trash,
 } from "lucide-react"
 import React, { ElementRef, useEffect, useRef, useState } from "react"
 import { UserItems } from "./dashboard/user-items"
@@ -15,6 +16,8 @@ import { createDocument } from "@/api-requests/user"
 import { toast } from "sonner"
 import { useUserDocumentsOptions } from "@/hooks/user"
 import { DocumentList } from "./dashboard/document-list"
+import { Popover, PopoverContent, PopoverTrigger } from "./ui/popover"
+import { TrashBox } from "./dashboard/trash"
 export function Sidebar() {
   const isMobile = useMediaQuery("(max-width: 768px)")
   const resizeRef = useRef(false)
@@ -146,6 +149,16 @@ export function Sidebar() {
         </div>
         <div className=" mt-4">
           <DocumentList documents={documents!} />
+
+          {/*TODO: Add popover trash */}
+          <Popover>
+            <PopoverTrigger className=" w-full mt-4">
+              <Item label="Trash" icon={Trash} onClick={() => {}} />
+            </PopoverTrigger>
+            <PopoverContent side="right">
+              <TrashBox />
+            </PopoverContent>
+          </Popover>
         </div>
         <div
           onMouseDown={handleMouseDown}

@@ -1,4 +1,4 @@
-import { createDocument } from "@/api-requests/user"
+import { archiveDocument, createDocument } from "@/api-requests/user"
 import { cn } from "@/lib/utils"
 import { DropdownMenu } from "@radix-ui/react-dropdown-menu"
 import { useMutation, useQueryClient } from "@tanstack/react-query"
@@ -55,7 +55,7 @@ export const Item = ({
   const queryClient = useQueryClient()
 
   const { mutate: handleCreateDocument } = useMutation({
-    mutationKey: ["createDocument"],
+    mutationKey: ["createChildDocument"],
     mutationFn: () =>
       createDocument({
         title: "Untitled",
@@ -73,12 +73,29 @@ export const Item = ({
     },
   })
 
+  const { mutate: handleArchiveDocument } = useMutation({
+    mutationKey: ["archiveDocument"],
+    mutationFn: (id: number) => archiveDocument(id),
+    onSuccess: () => {
+      toast.success("Document archived")
+      queryClient.invalidateQueries({
+        queryKey: ["getUserDocuments"],
+      })
+      queryClient.invalidateQueries({
+        queryKey: ["getUserArchivedDocuments"],
+      })
+    },
+    onError: (error) => {
+      toast.error("Failed to archive document")
+      console.error(error)
+    },
+  })
+
   function onCreateNewPage(
     event: React.MouseEvent<HTMLDivElement, MouseEvent>
   ) {
     event.preventDefault()
     event.stopPropagation()
-    console.log("Create new page")
     handleCreateDocument()
   }
 
@@ -137,7 +154,7 @@ export const Item = ({
               side="right"
               forceMount
             >
-              <DropdownMenuItem>
+              <DropdownMenuItem onClick={() => handleArchiveDocument(id)}>
                 <Trash className=" h-4 w-4 mr-2" />
                 Delete
               </DropdownMenuItem>
