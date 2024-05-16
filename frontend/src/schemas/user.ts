@@ -9,6 +9,13 @@ export const userSchema = z.object({
 
 export type User = z.infer<typeof userSchema>
 
+export const updateDocumentSchema = z.object({
+  id: z.number(),
+  title: z.string().optional().nullable(),
+  content: z.string().optional().nullable(),
+  icon: z.string().optional().nullable(),
+})
+
 export const documentSchema = z.object({
   id: z.number(),
   title: z.string(),

@@ -21,7 +21,7 @@ export const UserItems = () => {
           role="button"
           className=" flex items-center text-sm p-3 w-full hover:bg-primary/5"
         >
-          <div className=" gap-x-2 flex items-center max-w-[120px] ">
+          <div className=" gap-x-2 flex items-center max-w-[140px] ">
             <div className=" h-6 w-6 bg-black rounded-md text-white flex justify-center items-center shrink-0 ">
               {user?.firstName.charAt(0).toUpperCase()}
             </div>

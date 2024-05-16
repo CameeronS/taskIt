@@ -16,7 +16,8 @@ import { Route as HomeLayoutImport } from './routes/_home/_layout'
 import { Route as AuthenticatedLayoutImport } from './routes/_authenticated/_layout'
 import { Route as HomeLayoutIndexImport } from './routes/_home/_layout/index'
 import { Route as HomeLayoutAuthImport } from './routes/_home/_layout/auth'
-import { Route as AuthenticatedLayoutDashboardImport } from './routes/_authenticated/_layout/dashboard'
+import { Route as AuthenticatedLayoutDashboardIndexImport } from './routes/_authenticated/_layout/dashboard/index'
+import { Route as AuthenticatedLayoutDashboardDocumentsIdIndexImport } from './routes/_authenticated/_layout/dashboard/$documentsId/index'
 
 // Create/Update Routes
 
@@ -45,9 +46,15 @@ const HomeLayoutAuthRoute = HomeLayoutAuthImport.update({
   getParentRoute: () => HomeLayoutRoute,
 } as any)
 
-const AuthenticatedLayoutDashboardRoute =
-  AuthenticatedLayoutDashboardImport.update({
-    path: '/dashboard',
+const AuthenticatedLayoutDashboardIndexRoute =
+  AuthenticatedLayoutDashboardIndexImport.update({
+    path: '/dashboard/',
+    getParentRoute: () => AuthenticatedLayoutRoute,
+  } as any)
+
+const AuthenticatedLayoutDashboardDocumentsIdIndexRoute =
+  AuthenticatedLayoutDashboardDocumentsIdIndexImport.update({
+    path: '/dashboard/$documentsId/',
     getParentRoute: () => AuthenticatedLayoutRoute,
   } as any)
 
@@ -67,10 +74,6 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof HomeLayoutImport
       parentRoute: typeof rootRoute
     }
-    '/_authenticated/_layout/dashboard': {
-      preLoaderRoute: typeof AuthenticatedLayoutDashboardImport
-      parentRoute: typeof AuthenticatedLayoutImport
-    }
     '/_home/_layout/auth': {
       preLoaderRoute: typeof HomeLayoutAuthImport
       parentRoute: typeof HomeLayoutImport
@@ -79,6 +82,14 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof HomeLayoutIndexImport
       parentRoute: typeof HomeLayoutImport
     }
+    '/_authenticated/_layout/dashboard/': {
+      preLoaderRoute: typeof AuthenticatedLayoutDashboardIndexImport
+      parentRoute: typeof AuthenticatedLayoutImport
+    }
+    '/_authenticated/_layout/dashboard/$documentsId/': {
+      preLoaderRoute: typeof AuthenticatedLayoutDashboardDocumentsIdIndexImport
+      parentRoute: typeof AuthenticatedLayoutImport
+    }
   }
 }
 
@@ -86,7 +97,10 @@ declare module '@tanstack/react-router' {
 
 export const routeTree = rootRoute.addChildren([
   AuthenticatedRoute.addChildren([
-    AuthenticatedLayoutRoute.addChildren([AuthenticatedLayoutDashboardRoute]),
+    AuthenticatedLayoutRoute.addChildren([
+      AuthenticatedLayoutDashboardIndexRoute,
+      AuthenticatedLayoutDashboardDocumentsIdIndexRoute,
+    ]),
   ]),
   HomeLayoutRoute.addChildren([HomeLayoutAuthRoute, HomeLayoutIndexRoute]),
 ])

@@ -1,4 +1,5 @@
 import {
+  getDocumentById,
   getUser,
   getUserArchivedDocuments,
   getUserDocuments,
@@ -23,3 +24,11 @@ export const useUserArchivedDocumentsOptions = queryOptions({
   queryFn: getUserArchivedDocuments,
   staleTime: Infinity,
 })
+
+export const useUserDocumentOptionsById = (id: number) => {
+  return queryOptions({
+    queryKey: ["getUserDocumentById", id],
+    queryFn: () => getDocumentById(id),
+    staleTime: Infinity,
+  })
+}

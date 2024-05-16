@@ -2,6 +2,7 @@ import { useMediaQuery } from "@/hooks/use-media-query"
 import { cn } from "@/lib/utils"
 import {
   ChevronsLeft,
+  Home,
   MenuIcon,
   PlusCircle,
   Search,
@@ -18,6 +19,8 @@ import { useUserDocumentsOptions } from "@/hooks/user"
 import { DocumentList } from "./dashboard/document-list"
 import { Popover, PopoverContent, PopoverTrigger } from "./ui/popover"
 import { TrashBox } from "./dashboard/trash"
+import { useNavigate, useParams } from "@tanstack/react-router"
+import { DocumentNavbar } from "./dashboard/document-navbar"
 export function Sidebar() {
   const isMobile = useMediaQuery("(max-width: 768px)")
   const resizeRef = useRef(false)
@@ -26,6 +29,13 @@ export function Sidebar() {
   const [isResetting, setIsResetting] = useState<boolean>(false)
   const [isCollapsed, setIsCollapsed] = useState<boolean>(isMobile)
   const queryClient = useQueryClient()
+  const navigate = useNavigate()
+  const params = useParams({
+    strict: false,
+    select(params: { documentsId: string }) {
+      return { documentsId: params.documentsId }
+    },
+  })
 
   useEffect(() => {
     if (isMobile) {
@@ -139,6 +149,11 @@ export function Sidebar() {
           <UserItems />
           <Item label="Search" icon={Search} isSearch onClick={() => {}} />
 
+          <Item
+            label="Home"
+            icon={Home}
+            onClick={() => navigate({ to: "/dashboard" })}
+          />
           <Item label="Settings" icon={Settings} onClick={() => {}} />
 
           <Item
@@ -169,20 +184,24 @@ export function Sidebar() {
       <div
         ref={navbarRef}
         className={cn(
-          " absolute left-60 w-[calc(100%-240px)] z-[1000]",
+          "absolute left-40 w-[calc(100%-240px)] z-[1000] top-0",
           isResetting && "transition-all ease-in-out duration-300",
           isMobile && "w-full left-0"
         )}
       >
-        <nav className="bg-transparent px-3 py-2 w-full">
-          {isCollapsed && (
-            <MenuIcon
-              onClick={resetWidth}
-              role="button"
-              className=" h-6 w-6 text-muted-foreground"
-            />
-          )}
-        </nav>
+        {!!params.documentsId ? (
+          <DocumentNavbar isCollapsed={isCollapsed} onResetWidth={resetWidth} />
+        ) : (
+          <nav className="bg-transparent px-3 py-2 w-full">
+            {isCollapsed && (
+              <MenuIcon
+                onClick={resetWidth}
+                role="button"
+                className=" h-6 w-6 text-muted-foreground"
+              />
+            )}
+          </nav>
+        )}
       </div>
     </>
   )

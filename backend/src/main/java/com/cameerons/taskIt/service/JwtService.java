@@ -22,6 +22,9 @@ public class JwtService {
     @Value("${jwt.secret}")
     private String SECRET_KEY;
 
+    @Value("${jwt.expiration}")
+    private long EXPIRATION_TIME;
+
     // Logger
     private static final Logger logger = LoggerFactory.getLogger(JwtService.class);
     public String extractUsername(String token) {
@@ -46,8 +49,8 @@ public class JwtService {
                 .setClaims(extraClaims)
                 .setSubject(userDetails.getUsername())
                 .setIssuedAt(new Date(System.currentTimeMillis()))
-             // set expiration time to 30 minutes
-                .setExpiration(new Date(System.currentTimeMillis() + 1800000))
+             // set expiration time to 30 minutes 1800000
+                .setExpiration(new Date(System.currentTimeMillis() + EXPIRATION_TIME))
                 .signWith(getSignInKey(), SignatureAlgorithm.HS256)
                 .claim("authorities", authorities)
                 .compact();

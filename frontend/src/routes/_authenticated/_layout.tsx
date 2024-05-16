@@ -7,7 +7,7 @@ export const Route = createFileRoute("/_authenticated/_layout")({
 
 function LayoutComponent() {
   return (
-    <div className=" flex mx-auto max-w-[1750px] h-screen w-full">
+    <div className=" flex mx-auto max-w-[1750px] h-screen  ">
       <Sidebar />
       <Outlet />
     </div>

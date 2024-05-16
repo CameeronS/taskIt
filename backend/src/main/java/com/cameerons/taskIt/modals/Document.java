@@ -18,6 +18,7 @@ public class Document {
     @GeneratedValue
     private Integer id;
     private String title;
+    @Column(name = "content", columnDefinition = "TEXT", length = 2048)
     private String content;
     @Column(columnDefinition = "boolean default false")
     private Boolean isArchived;

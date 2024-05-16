@@ -24,7 +24,26 @@ public class DocumentController {
 
     @GetMapping("/get")
     public ResponseEntity<?> getAllUserDocuments(@RequestHeader("Authorization") String token){
-        return ResponseEntity.ok(documentService.getAllUserDocuments(token));
+        return ResponseEntity.ok(documentService.getAllUserDocuments(token, false));
+    }
+
+    @GetMapping("/get/archived")
+    public ResponseEntity<?> getAllUserArchivedDocuments(@RequestHeader("Authorization") String token){
+        return ResponseEntity.ok(documentService.getAllArchivedDocuments(token));
+    }
+
+    @GetMapping("/get/{documentId}")
+    public ResponseEntity<?> getDocument(@PathVariable Integer documentId, @RequestHeader("Authorization") String token){
+        try {
+            return ResponseEntity.ok(documentService.getDocumentById(documentId, token));
+        } catch (Exception e){
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
+    }
+
+    @PutMapping("/update/{documentId}")
+    public ResponseEntity<?> updateDocument(@PathVariable Integer documentId, @RequestBody CreateDocumentDto document, @RequestHeader("Authorization") String token){
+        return ResponseEntity.ok(documentService.updateDocument(documentId, document, token));
     }
 
     @PutMapping("/archive/{documentId}")

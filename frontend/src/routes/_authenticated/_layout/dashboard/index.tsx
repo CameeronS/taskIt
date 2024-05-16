@@ -2,7 +2,7 @@ import { Button } from "@/components/ui/button"
 import { createFileRoute } from "@tanstack/react-router"
 import { PlusCircleIcon } from "lucide-react"
 
-export const Route = createFileRoute("/_authenticated/_layout/dashboard")({
+export const Route = createFileRoute("/_authenticated/_layout/dashboard/")({
   component: Dashboard,
 })
 
@@ -10,7 +10,7 @@ function Dashboard() {
   const { user } = Route.useRouteContext()
 
   return (
-    <div className=" flex flex-col items-center justify-center h-full w-full gap-4 ">
+    <div className=" flex flex-col items-center justify-center h-full space-y-4  flex-1 ">
       <img
         height={300}
         width={300}
