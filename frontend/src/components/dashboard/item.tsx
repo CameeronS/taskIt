@@ -110,7 +110,20 @@ export const Item = ({
       )}
     >
       {documentIcon ? (
-        <div className=" shrink-0 mr-2 text-lg">{documentIcon}</div>
+        <>
+          <div className=" shrink-0 mr-3 ml-1 text-base group-hover:hidden">
+            {documentIcon}
+          </div>
+          {!!id && (
+            <div
+              role="button"
+              className=" h-full rounded-sm hover:bg-neutral-300 hidden group-hover:flex ml-1 mr-3"
+              onClick={handleExpand}
+            >
+              <ChevronIcon className=" h-4 w-4 shrink-0 text-muted-foreground/50" />
+            </div>
+          )}
+        </>
       ) : (
         <>
           <Icon

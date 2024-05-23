@@ -1,22 +1,44 @@
-import { useCreateBlockNote } from "@blocknote/react"
 import { BlockNoteView } from "@blocknote/mantine"
 import "@blocknote/mantine/style.css"
-import { PartialBlock } from "@blocknote/core"
+import { useEffect, useMemo, useState } from "react"
+import { BlockNoteEditor, PartialBlock } from "@blocknote/core"
 
 interface TextEditorProps {
   onChange: (value: string) => void
-  initialContent?: string
+  jsonBlocks: string
 }
-export const TextEditor = ({ onChange, initialContent }: TextEditorProps) => {
-  const content = initialContent ? JSON.parse(initialContent) : undefined
+const TextEditor = ({ onChange, jsonBlocks }: TextEditorProps) => {
+  const [initialContent, setInitialContent] = useState<
+    PartialBlock[] | undefined | "loading"
+  >("loading")
 
-  const editor = useCreateBlockNote({
-    initialContent: content as PartialBlock[] | undefined,
-  })
+  const loadData = async () => {
+    return jsonBlocks ? (JSON.parse(jsonBlocks) as PartialBlock[]) : undefined
+  }
 
-  function handleChange() {
+  useEffect(() => {
+    loadData().then((data) => {
+      setInitialContent(data)
+      console.log(data)
+    })
+  }, [jsonBlocks])
+
+  const editor = useMemo(() => {
+    if (initialContent === "loading") {
+      return undefined
+    }
+    return BlockNoteEditor.create({ initialContent })
+  }, [initialContent])
+
+  if (editor === undefined) {
+    return "Loading content..."
+  }
+
+  const handleChange = () => {
     onChange(JSON.stringify(editor.document, null, 2))
   }
 
-  return <BlockNoteView editor={editor} theme="light" onChange={handleChange} />
+  return <BlockNoteView editor={editor} onChange={handleChange} theme="light" />
 }
+
+export default TextEditor

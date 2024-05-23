@@ -1,8 +1,13 @@
 export const navItems = [
   {
     id: 1,
-    name: "Get Started",
+    name: "Create a note",
     link: "/",
+  },
+  {
+    id: 3,
+    name: "Dashboard",
+    link: "/dashboard",
   },
 
   {

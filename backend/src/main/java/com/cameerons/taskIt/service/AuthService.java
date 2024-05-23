@@ -58,6 +58,7 @@ public class AuthService {
                 .lastName(registerRequest.getLastName())
                 .password(passwordEncoder.encode(registerRequest.getPassword()))
                 .createdAt(LocalDateTime.now())
+                .enabled(true)
                 .roles(List.of(role))
                 .build();
 

@@ -1,8 +1,9 @@
-import { useNavigate, useParams } from "@tanstack/react-router"
+import { Link, useNavigate, useParams } from "@tanstack/react-router"
 import { FileIcon } from "lucide-react"
 import { useState } from "react"
 import { Item } from "./item"
 import { Document } from "@/schemas/user"
+import { useQueryClient } from "@tanstack/react-query"
 
 interface DocumentListProps {
   level?: number
@@ -11,7 +12,7 @@ interface DocumentListProps {
 
 export const DocumentList = ({ level = 0, documents }: DocumentListProps) => {
   const [expanded, setExpanded] = useState<Record<number, boolean>>({})
-  const navigate = useNavigate()
+
   const params = useParams({
     strict: false,
     select(params: { documentsId: string }) {
@@ -26,10 +27,6 @@ export const DocumentList = ({ level = 0, documents }: DocumentListProps) => {
     }))
   }
 
-  const onRedirect = (documentId: number) => {
-    navigate({ to: `/dashboard/${documentId}` })
-  }
-
   if (!documents) {
     return null
   }
@@ -38,10 +35,16 @@ export const DocumentList = ({ level = 0, documents }: DocumentListProps) => {
     <>
       {documents &&
         documents.map((doc) => (
-          <div key={doc.id}>
+          <Link
+            key={doc.id}
+            to={"/dashboard/$documentsId"}
+            params={{
+              documentsId: doc.id.toString(),
+            }}
+          >
             <Item
               id={doc.id}
-              onClick={() => onRedirect(doc.id)}
+              onClick={() => {}}
               label={doc.title}
               icon={FileIcon}
               documentIcon={doc.icon!}
@@ -66,7 +69,7 @@ export const DocumentList = ({ level = 0, documents }: DocumentListProps) => {
             {expanded[doc.id] && doc.children && (
               <DocumentList level={level + 1} documents={doc.children} />
             )}
-          </div>
+          </Link>
         ))}
     </>
   )

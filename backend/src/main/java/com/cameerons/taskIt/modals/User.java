@@ -44,6 +44,10 @@ public class User implements UserDetails, Principal {
     @LastModifiedDate
     @Column(insertable = false)
     private LocalDateTime updatedAt;
+
+    // default value is true
+
+    @Column(columnDefinition = "boolean default true")
     private boolean enabled;
     private boolean accountLocked;
 

@@ -6,6 +6,7 @@ import { z } from "zod"
 import { useMutation, useQueryClient } from "@tanstack/react-query"
 import { toast } from "sonner"
 import { updateDocumentTitle } from "@/api-requests/user"
+import { useSaving } from "@/hooks/use-saving"
 
 interface DocumentTitleProps {
   documentData: z.infer<typeof documentSchema>
@@ -15,6 +16,7 @@ export const DocumentTitle = ({ documentData }: DocumentTitleProps) => {
   const [isEditing, setIsEditing] = useState(false)
   const inputRef = useRef<HTMLInputElement>(null)
   const queryClient = useQueryClient()
+  const { saving } = useSaving()
 
   function enableInput() {
     setIsEditing(true)
@@ -34,7 +36,7 @@ export const DocumentTitle = ({ documentData }: DocumentTitleProps) => {
       values: {
         id: documentData.id,
         title: e.target.value,
-        content: "",
+        content: documentData.content,
         icon: "",
       },
     })
@@ -77,13 +79,19 @@ export const DocumentTitle = ({ documentData }: DocumentTitleProps) => {
           className=" h-7 focus-visible:ring-transparent pt-3 pl-1 border-none shadow-none text-lg"
         />
       ) : (
-        <Button
-          onClick={enableInput}
-          variant={"ghost"}
-          className=" font-normal h-auto p-1 text-lg"
-        >
-          <span className="truncate">{documentData.title}</span>
-        </Button>
+        <>
+          <Button
+            onClick={enableInput}
+            variant={"ghost"}
+            className=" font-normal h-auto p-1 text-lg"
+          >
+            <span className="truncate">{documentData.title}</span>
+          </Button>
+
+          {saving && (
+            <p className=" text-sm ml-2 text-muted-foreground">Saving...</p>
+          )}
+        </>
       )}
     </div>
   )

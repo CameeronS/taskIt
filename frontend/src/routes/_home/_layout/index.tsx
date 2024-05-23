@@ -7,13 +7,18 @@ export const Route = createFileRoute("/_home/_layout/")({
 
 function Index() {
   return (
-    <div className=" w-full flex flex-col items-center mt-20">
-      <h1 className=" text-4xl mx-auto font-medium max-w-[800px] text-center">
-        Collaborate, plan, and get things done with the power of{" "}
-        <span className=" underline">taskIt</span>
+    <div className=" w-full flex flex-col items-center mt-14">
+      <h1 className=" text-5xl mx-auto font-medium max-w-[800px] text-center">
+        A tiny note taking app
       </h1>
-      <Button className=" mt-5">Get Started</Button>
-      <img src="src/assets/hero.png" height={400} width={600} alt="" />
+      <p className=" max-w-[350px] text-center mt-2 text-lg">
+        Simple, fast, use <span className="underline">taskit</span> to
+        collaborate, plan, and get things done{" "}
+      </p>
+      <Button className=" mt-5 font-normal">Create a note</Button>
+      <div className=" rounded-md p-2 bg-gray-200 flex justify-center mt-7 shadow-2xl shadow-black/50 drop-shadow-2xl">
+        <img src="src/assets/screen.png" height={400} width={600} alt="" />
+      </div>
     </div>
   )
 }

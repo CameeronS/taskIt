@@ -15,8 +15,10 @@ import { Route as AuthenticatedImport } from './routes/_authenticated'
 import { Route as HomeLayoutImport } from './routes/_home/_layout'
 import { Route as AuthenticatedLayoutImport } from './routes/_authenticated/_layout'
 import { Route as HomeLayoutIndexImport } from './routes/_home/_layout/index'
-import { Route as HomeLayoutAuthImport } from './routes/_home/_layout/auth'
+import { Route as AuthenticatedLayoutPlaygroundImport } from './routes/_authenticated/_layout/playground'
+import { Route as HomeLayoutAuthIndexImport } from './routes/_home/_layout/auth/index'
 import { Route as AuthenticatedLayoutDashboardIndexImport } from './routes/_authenticated/_layout/dashboard/index'
+import { Route as HomeLayoutAuthRegisterIndexImport } from './routes/_home/_layout/auth/register/index'
 import { Route as AuthenticatedLayoutDashboardDocumentsIdIndexImport } from './routes/_authenticated/_layout/dashboard/$documentsId/index'
 
 // Create/Update Routes
@@ -41,8 +43,14 @@ const HomeLayoutIndexRoute = HomeLayoutIndexImport.update({
   getParentRoute: () => HomeLayoutRoute,
 } as any)
 
-const HomeLayoutAuthRoute = HomeLayoutAuthImport.update({
-  path: '/auth',
+const AuthenticatedLayoutPlaygroundRoute =
+  AuthenticatedLayoutPlaygroundImport.update({
+    path: '/playground',
+    getParentRoute: () => AuthenticatedLayoutRoute,
+  } as any)
+
+const HomeLayoutAuthIndexRoute = HomeLayoutAuthIndexImport.update({
+  path: '/auth/',
   getParentRoute: () => HomeLayoutRoute,
 } as any)
 
@@ -50,6 +58,12 @@ const AuthenticatedLayoutDashboardIndexRoute =
   AuthenticatedLayoutDashboardIndexImport.update({
     path: '/dashboard/',
     getParentRoute: () => AuthenticatedLayoutRoute,
+  } as any)
+
+const HomeLayoutAuthRegisterIndexRoute =
+  HomeLayoutAuthRegisterIndexImport.update({
+    path: '/auth/register/',
+    getParentRoute: () => HomeLayoutRoute,
   } as any)
 
 const AuthenticatedLayoutDashboardDocumentsIdIndexRoute =
@@ -63,46 +77,86 @@ const AuthenticatedLayoutDashboardDocumentsIdIndexRoute =
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
     '/_authenticated': {
+      id: '/_authenticated'
+      path: ''
+      fullPath: ''
       preLoaderRoute: typeof AuthenticatedImport
       parentRoute: typeof rootRoute
     }
     '/_authenticated/_layout': {
+      id: '/_authenticated/_layout'
+      path: ''
+      fullPath: ''
       preLoaderRoute: typeof AuthenticatedLayoutImport
       parentRoute: typeof AuthenticatedImport
     }
     '/_home/_layout': {
+      id: '/_home/_layout'
+      path: ''
+      fullPath: ''
       preLoaderRoute: typeof HomeLayoutImport
       parentRoute: typeof rootRoute
     }
-    '/_home/_layout/auth': {
-      preLoaderRoute: typeof HomeLayoutAuthImport
-      parentRoute: typeof HomeLayoutImport
+    '/_authenticated/_layout/playground': {
+      id: '/_authenticated/_layout/playground'
+      path: '/playground'
+      fullPath: '/playground'
+      preLoaderRoute: typeof AuthenticatedLayoutPlaygroundImport
+      parentRoute: typeof AuthenticatedLayoutImport
     }
     '/_home/_layout/': {
+      id: '/_home/_layout/'
+      path: '/'
+      fullPath: '/'
       preLoaderRoute: typeof HomeLayoutIndexImport
       parentRoute: typeof HomeLayoutImport
     }
     '/_authenticated/_layout/dashboard/': {
+      id: '/_authenticated/_layout/dashboard/'
+      path: '/dashboard'
+      fullPath: '/dashboard'
       preLoaderRoute: typeof AuthenticatedLayoutDashboardIndexImport
       parentRoute: typeof AuthenticatedLayoutImport
     }
+    '/_home/_layout/auth/': {
+      id: '/_home/_layout/auth/'
+      path: '/auth'
+      fullPath: '/auth'
+      preLoaderRoute: typeof HomeLayoutAuthIndexImport
+      parentRoute: typeof HomeLayoutImport
+    }
     '/_authenticated/_layout/dashboard/$documentsId/': {
+      id: '/_authenticated/_layout/dashboard/$documentsId/'
+      path: '/dashboard/$documentsId'
+      fullPath: '/dashboard/$documentsId'
       preLoaderRoute: typeof AuthenticatedLayoutDashboardDocumentsIdIndexImport
       parentRoute: typeof AuthenticatedLayoutImport
+    }
+    '/_home/_layout/auth/register/': {
+      id: '/_home/_layout/auth/register/'
+      path: '/auth/register'
+      fullPath: '/auth/register'
+      preLoaderRoute: typeof HomeLayoutAuthRegisterIndexImport
+      parentRoute: typeof HomeLayoutImport
     }
   }
 }
 
 // Create and export the route tree
 
-export const routeTree = rootRoute.addChildren([
-  AuthenticatedRoute.addChildren([
-    AuthenticatedLayoutRoute.addChildren([
+export const routeTree = rootRoute.addChildren({
+  AuthenticatedRoute: AuthenticatedRoute.addChildren({
+    AuthenticatedLayoutRoute: AuthenticatedLayoutRoute.addChildren({
+      AuthenticatedLayoutPlaygroundRoute,
       AuthenticatedLayoutDashboardIndexRoute,
       AuthenticatedLayoutDashboardDocumentsIdIndexRoute,
-    ]),
-  ]),
-  HomeLayoutRoute.addChildren([HomeLayoutAuthRoute, HomeLayoutIndexRoute]),
-])
+    }),
+  }),
+  HomeLayoutRoute: HomeLayoutRoute.addChildren({
+    HomeLayoutIndexRoute,
+    HomeLayoutAuthIndexRoute,
+    HomeLayoutAuthRegisterIndexRoute,
+  }),
+})
 
 /* prettier-ignore-end */

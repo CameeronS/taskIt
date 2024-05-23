@@ -20,8 +20,6 @@ async function refreshAuthToken() {
 
 const refreshAndRetryQueue: RetryQueueItem[] = []
 
-let isRefreshing = false
-
 api.interceptors.request.use(
   (config) => {
     const auth_token = Cookies.get("auth_token")
@@ -47,12 +45,6 @@ api.interceptors.response.use(
     const originalRequest: AxiosRequestConfig = error.config
 
     try {
-      if (err.response?.status === 400) {
-        if (error.response.data === "Document not found") {
-          throw redirect({ to: "/dashboard" })
-        }
-      }
-
       if (err.response?.status === 401 && err.response.data === "JWT Error") {
         // Refresh the auth token
         await refreshAuthToken()
@@ -82,6 +74,13 @@ api.interceptors.response.use(
         Cookies.remove("auth_token")
         Cookies.remove("refresh_token")
         throw redirect({ to: "/auth" })
+      }
+    }
+
+    if (err.response?.status === 400) {
+      if (error.response.data === "Document not found") {
+        console.log("Document not found")
+        throw redirect({ to: "/dashboard" })
       }
     }
 

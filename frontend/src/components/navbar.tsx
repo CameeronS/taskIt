@@ -21,7 +21,7 @@ export const Navbar = () => {
   }
 
   return (
-    <header className=" sticky top-0 z-[1000]  h-16 py-2">
+    <header className=" sticky top-0 z-[1000]  h-16 py-2 px-24">
       <nav className="  mx-auto flex  items-center justify-between bg-background ">
         <div className=" flex gap-2 items-center">
           <Logo />
@@ -30,12 +30,13 @@ export const Navbar = () => {
 
         <ul className="hidden items-center gap-5 lg:flex">
           {navItems.map((item) => {
-            if (item.name === "Get Started")
+            if (item.name === "Create a note")
               return (
                 <Button key={item.id} className=" ml-5 font-normal">
                   {item.name}
                 </Button>
               )
+
             if (item.name === "Log In" && user)
               return (
                 <Button
