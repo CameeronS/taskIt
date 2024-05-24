@@ -1,6 +1,6 @@
 import { Button } from "@/components/ui/button"
 import { createFileRoute } from "@tanstack/react-router"
-
+import Screen from "@/assets/screen.png"
 export const Route = createFileRoute("/_home/_layout/")({
   component: Index,
 })
@@ -17,7 +17,7 @@ function Index() {
       </p>
       <Button className=" mt-5 font-normal">Create a note</Button>
       <div className=" rounded-md p-2 bg-gray-200 flex justify-center mt-7 shadow-2xl shadow-black/50 drop-shadow-2xl">
-        <img src="src/assets/screen.png" height={400} width={600} alt="" />
+        <img src={Screen} height={400} width={600} alt="" />
       </div>
     </div>
   )

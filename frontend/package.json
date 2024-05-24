@@ -4,10 +4,11 @@
   "version": "0.0.0",
   "type": "module",
   "scripts": {
-    "build": "bunx --bun vite build",
-    "dev": "sst bind next dev",
+    "build": "vite build",
+    "dev": "sst bind dev",
     "lint": "eslint . --ext ts,tsx --report-unused-disable-directives --max-warnings 0",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "testdev": "bunx --bun vite"
   },
   "dependencies": {
     "@blocknote/core": "^0.13.2",
@@ -61,6 +62,8 @@
     "tailwindcss": "^3.4.3",
     "typescript": "^5.2.2",
     "vite": "^5.2.0",
-    "constructs": "10.3.0"
+    "constructs": "10.3.0",
+    "sst": "^2.42.0",
+    "aws-cdk-lib": "2.142.1"
   }
 }

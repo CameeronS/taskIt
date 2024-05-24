@@ -14,7 +14,7 @@ import {
 import { Input } from "@/components/ui/input"
 import { loginSchema } from "@/schemas/auth"
 import { useLogin } from "@/hooks/use-auth"
-import { Label } from "../ui/label"
+import EmptyDashboard from "@/assets/emptydashboard.png"
 import { Link } from "@tanstack/react-router"
 
 export const LoginForm = () => {
@@ -100,7 +100,7 @@ export const LoginForm = () => {
       </div>
       <div className="hidden  lg:block">
         <img
-          src="/src/assets/emptydashboard.png"
+          src={EmptyDashboard}
           alt="Image"
           width="1920"
           height="1080"
