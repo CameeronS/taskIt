@@ -7,7 +7,7 @@ import { TanStackRouterVite } from "@tanstack/router-vite-plugin"
 export default defineConfig({
   plugins: [react(), TanStackRouterVite()],
   build: {
-    outDir: "dist",
+    outDir: "../backend/src/main/resources/static/",
     emptyOutDir: true,
   },
   resolve: {
@@ -20,10 +20,9 @@ export default defineConfig({
     port: 3000,
     proxy: {
       "/api": {
-        target: "https://vlog2tuujb.execute-api.eu-west-2.amazonaws.com/prod",
+        target: "http://localhost:8080",
         changeOrigin: true,
       },
     },
   },
-  assetsInclude: ["./src/assets/**/*"],
 })

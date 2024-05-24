@@ -15,7 +15,6 @@ import { Input } from "@/components/ui/input"
 import { useRegister } from "@/hooks/use-auth"
 import { Link } from "@tanstack/react-router"
 import { registerSchema } from "@/schemas/auth"
-import EmptyDashboard from "@/assets/emptydashboard.png"
 
 export const RegisterForm = () => {
   const form = useForm<z.infer<typeof registerSchema>>({
@@ -118,7 +117,7 @@ export const RegisterForm = () => {
       </div>
       <div className="hidden  lg:block">
         <img
-          src={EmptyDashboard}
+          src="/src/assets/emptydashboard.png"
           alt="Image"
           width="1920"
           height="1080"
