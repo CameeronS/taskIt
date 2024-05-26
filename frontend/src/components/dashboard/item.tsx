@@ -105,7 +105,7 @@ export const Item = ({
       style={{ paddingLeft: level ? `${level * 12 + 12}px` : "12px" }}
       onClick={onClick}
       className={cn(
-        "group min-h-[27px] text-sm py-1 pr-3 w-full hover:bg-primary/5 flex items-center text-muted-foreground font-medium",
+        "group min-h-[27px] text-sm py-1 pr-3 mx-2 hover:bg-primary/5 flex items-center text-muted-foreground font-medium rounded-lg",
         active && "bg-primary/5 text-primary"
       )}
     >
@@ -117,10 +117,10 @@ export const Item = ({
           {!!id && (
             <div
               role="button"
-              className=" h-full rounded-sm hover:bg-neutral-300 hidden group-hover:flex ml-1 mr-3"
+              className=" h-full rounded-sm hover:bg-neutral-200 hidden group-hover:flex ml-1 mr-3"
               onClick={handleExpand}
             >
-              <ChevronIcon className=" h-4 w-4 shrink-0 text-muted-foreground/50" />
+              <ChevronIcon className=" h-[18px] w-[18px] shrink-0 text-muted-foreground/50" />
             </div>
           )}
         </>

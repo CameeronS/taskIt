@@ -4,27 +4,20 @@ import { Link, useNavigate } from "@tanstack/react-router"
 import { navItems } from "@/lib/items"
 import { userQueryOptions } from "@/hooks/user"
 import { useQuery, useQueryClient } from "@tanstack/react-query"
-import { Logo } from "./logo"
+import { Icons } from "./icons"
+import { useLogout } from "@/hooks/use-auth"
 
 export const Navbar = () => {
   const { data: user } = useQuery(userQueryOptions)
   const navigate = useNavigate()
-  const queryClient = useQueryClient()
 
-  function handleLogout() {
-    const authToken = localStorage.getItem("authToken")
-    const refreshToken = localStorage.getItem("refreshToken")
-    if (authToken) localStorage.removeItem("authToken")
-    if (refreshToken) localStorage.removeItem("refreshToken")
-    queryClient.invalidateQueries({ queryKey: ["getUser"] })
-    navigate({ to: "/auth" })
-  }
+  const queryClient = useQueryClient()
+  const { mutate: handleLogOut, isPending } = useLogout()
 
   return (
     <header className=" sticky top-0 z-[1000]  h-16 py-2 px-24">
       <nav className="  mx-auto flex  items-center justify-between bg-background ">
         <div className=" flex gap-2 items-center">
-          <Logo />
           <span className=" font-medium text-xl">.taskIt</span>
         </div>
 
@@ -32,7 +25,18 @@ export const Navbar = () => {
           {navItems.map((item) => {
             if (item.name === "Create a note")
               return (
-                <Button key={item.id} className=" ml-5 font-normal">
+                <Button
+                  size={"sm"}
+                  onClick={() => {
+                    if (user) {
+                      navigate({ to: "/dashboard" })
+                    } else {
+                      navigate({ to: "/auth" })
+                    }
+                  }}
+                  key={item.id}
+                  className=" ml-5 font-normal"
+                >
                   {item.name}
                 </Button>
               )
@@ -40,12 +44,38 @@ export const Navbar = () => {
             if (item.name === "Log In" && user)
               return (
                 <Button
-                  onClick={handleLogout}
+                  key={item.id}
+                  disabled={isPending}
+                  onClick={() => {
+                    handleLogOut()
+                  }}
                   className=" font-normal"
-                  key={1223}
                   variant={"ghost"}
                 >
                   Log Out
+                </Button>
+              )
+
+            if (item.name === "Icon1")
+              return (
+                <Button
+                  key={item.id}
+                  className=" font-normal p-2 rounded-full"
+                  variant={"ghost"}
+                  size={"icon"}
+                >
+                  <Icons.x className=" w-6 h-6" />
+                </Button>
+              )
+            if (item.name === "Icon2")
+              return (
+                <Button
+                  key={item.id}
+                  className=" font-normal p-2 rounded-full"
+                  variant={"ghost"}
+                  size={"icon"}
+                >
+                  <Icons.linkedIn className=" w-6 h-6" />
                 </Button>
               )
 

@@ -97,10 +97,19 @@ public class AuthService {
                 .build();
     }
 
-    public UserDto getAuthUser() {
-        return null;
-    }
+    public String logout (HttpServletResponse response) {
+        Cookie cookie = new Cookie("refresh_token", "");
+        cookie.setMaxAge(0);
+        cookie.setPath("/");
+        response.addCookie(cookie);
 
+        Cookie jwtCookie = new Cookie("auth_token", "");
+        jwtCookie.setMaxAge(0);
+        jwtCookie.setPath("/");
+        response.addCookie(jwtCookie);
+
+        return "Logged out successfully";
+    }
 
     private String generateToken (User user) {
         String generatedToken = generateCode(6);

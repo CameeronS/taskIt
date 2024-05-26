@@ -1,9 +1,8 @@
-import { Link, useNavigate, useParams } from "@tanstack/react-router"
+import { Link, useParams } from "@tanstack/react-router"
 import { FileIcon } from "lucide-react"
 import { useState } from "react"
 import { Item } from "./item"
 import { Document } from "@/schemas/user"
-import { useQueryClient } from "@tanstack/react-query"
 
 interface DocumentListProps {
   level?: number

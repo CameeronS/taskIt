@@ -1,7 +1,8 @@
 import { BlockNoteView } from "@blocknote/mantine"
-import "@blocknote/mantine/style.css"
 import { useEffect, useMemo, useState } from "react"
 import { BlockNoteEditor, PartialBlock } from "@blocknote/core"
+import "@blocknote/mantine/style.css"
+import "../../globals.css"
 
 interface TextEditorProps {
   onChange: (value: string) => void
@@ -19,7 +20,6 @@ const TextEditor = ({ onChange, jsonBlocks }: TextEditorProps) => {
   useEffect(() => {
     loadData().then((data) => {
       setInitialContent(data)
-      console.log(data)
     })
   }, [jsonBlocks])
 
@@ -38,7 +38,14 @@ const TextEditor = ({ onChange, jsonBlocks }: TextEditorProps) => {
     onChange(JSON.stringify(editor.document, null, 2))
   }
 
-  return <BlockNoteView editor={editor} onChange={handleChange} theme="light" />
+  return (
+    <BlockNoteView
+      editor={editor}
+      onChange={handleChange}
+      theme="light"
+      data-theming-css-variables-demo
+    />
+  )
 }
 
 export default TextEditor

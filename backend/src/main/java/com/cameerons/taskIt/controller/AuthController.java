@@ -22,8 +22,7 @@ import com.cameerons.taskIt.response.LoginResponse;
 import java.util.Arrays;
 import java.util.HashMap;
 
-import static org.springframework.http.HttpStatus.CREATED;
-import static org.springframework.http.HttpStatus.UNAUTHORIZED;
+import static org.springframework.http.HttpStatus.*;
 
 @RestController
 @RequiredArgsConstructor
@@ -72,7 +71,6 @@ public class AuthController {
                                    claims.put("fullName", userInfo.getFirstName());
                                    String accessToken = jwtService.generateToken(userInfo, claims);
                                    Cookie [] cookies = request.getCookies();
-                                   // delete the old access token and create a new one
                                       Arrays.stream(cookies)
                                              .filter(cookie -> cookie.getName().equals("auth_token"))
                                              .forEach(cookie -> {
@@ -96,19 +94,12 @@ public class AuthController {
         }
     }
 
-    @GetMapping("/logout")
+    @PostMapping("/logout")
     public ResponseEntity<?> logout(HttpServletRequest request, HttpServletResponse response){
-        Cookie [] cookies = request.getCookies();
-        Arrays.stream(cookies)
-              .filter(cookie -> cookie.getName().equals("auth_token") || cookie.getName().equals("refresh_token"))
-              .forEach(cookie -> {
-                  cookie.setValue("");
-                  cookie.setMaxAge(0);
-                  response.addCookie(cookie);
-              });
 
-
-        return ResponseEntity.ok("Logout successful");
+           return ResponseEntity
+                .status(OK)
+                .body(authService.logout(response));
     }
 
 

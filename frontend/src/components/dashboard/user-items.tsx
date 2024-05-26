@@ -10,9 +10,11 @@ import { useQuery } from "@tanstack/react-query"
 
 import { ChevronsLeftRightIcon } from "lucide-react"
 import { Button } from "../ui/button"
+import { useLogout } from "@/hooks/use-auth"
 
 export const UserItems = () => {
   const { data: user } = useQuery(userQueryOptions)
+  const { mutate: handleLogOut } = useLogout()
 
   return (
     <DropdownMenu>
@@ -60,6 +62,7 @@ export const UserItems = () => {
         <DropdownMenuSeparator />
         <DropdownMenuItem className=" w-full text-muted-foreground h-8">
           <Button
+            onClick={() => handleLogOut()}
             className=" p-0 w-full justify-start hover:no-underline text-muted-foreground hover:text-primary "
             variant={"link"}
           >

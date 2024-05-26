@@ -39,3 +39,11 @@ export async function signUp(values: z.infer<typeof registerSchema>) {
     throw new Error(errorResponse.response.data)
   }
 }
+
+export async function logOut() {
+  try {
+    await axios.post("/api/auth/logout")
+  } catch (error) {
+    console.error(error)
+  }
+}

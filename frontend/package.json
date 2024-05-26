@@ -5,7 +5,7 @@
   "type": "module",
   "scripts": {
     "build": "bunx --bun vite build",
-    "dev": "sst bind next dev",
+    "dev": "bunx --bun vite",
     "lint": "eslint . --ext ts,tsx --report-unused-disable-directives --max-warnings 0",
     "preview": "vite preview"
   },
@@ -30,6 +30,7 @@
     "jose": "^5.2.4",
     "js-cookie": "^3.0.5",
     "lucide-react": "^0.378.0",
+    "mini-svg-data-uri": "^1.4.4",
     "next-themes": "^0.3.0",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
